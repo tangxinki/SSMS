@@ -1,0 +1,46 @@
+1 项目的目标
+    1）熟练使用vue组件化开发方式。（*****）
+    2）熟练使用 axios 进行前后端数据交互。（*****）
+    3）掌握git版本控制的使用。
+    4）熟悉后端的增删改查逻辑。
+    5）对整个完整项目的前后端所有的交互流程有个了解。
+
+Day01:
+1 git的使用常用命令
+    git clone 仓库地址         // 第一次从服务器下载代码
+    git status                // 查看状态     
+    git add .                 // 纳入版本控制 
+    git commit -m"简单描述"    // 提交到本地仓库
+    git push 仓库地址/ master          // 推送到远程仓库
+    git pull 仓库地址/ master          // 从远程仓库拉取  
+
+    项目仓库地址: https://github.com/sineLT/supms-system.git
+
+2 项目的启动
+    1) cnpm i 安装所有依赖 
+    2) npm run serve 启动项目
+    
+    注意：
+    项目地址:  http://127.0.0.1:8080
+
+
+3 项目的目录分配
+    views： 放页面级别的组件
+    components: 放小组件
+
+4 项目集成Element-ui
+    1) 下载 
+        cnpm i element-ui@2.4.11 --save
+
+    2) 在入口文件 main.js 中引入
+        import ElementUI from 'element-ui';            // 组件文件（js）
+        import 'element-ui/lib/theme-chalk/index.css'; // 样式文件
+
+    3）注册elementui
+        Vue.use(ElementUI);
+
+5 登录页面的实现
+
+6 后端首页的实现
+
+        
