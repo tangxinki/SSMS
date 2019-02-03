@@ -4,52 +4,39 @@
     <el-container>
       <!-- 左侧 -->
       <el-aside width="200px">
-        <el-menu :default-openeds="['1']"
-      default-active="2"
-      class="el-menu-vertical-demo"
-      @open="handleOpen"
-      router
-      @close="handleClose">
-      <el-submenu index="1">
-        <template slot="title">
-          <i class="el-icon-location"></i><span>系统管理</span>
-        </template>
-            <el-menu-item index="1-1">系统信息1</el-menu-item>
-            <el-menu-item index="1-1">系统信息2</el-menu-item>
-      </el-submenu>
-      <el-submenu index="2">
-        <template slot="title">
-          <i class="el-icon-location"></i><span>账号管理</span>
-        </template>
-            <el-menu-item index="2-1">账号管理</el-menu-item>
-            <el-menu-item index="2-2">添加账号</el-menu-item>
-
-          <el-menu-item index="2-3">密码添加</el-menu-item>
-      </el-submenu>
-    
-    </el-menu>
+        <Nav></Nav>
       </el-aside>
+
+      <!-- 右边 -->
       <el-container>
         <!-- 右侧头部 -->
-        <el-header>Header</el-header>
+        <el-header>
+          <Top></Top>
+        </el-header>
         <!-- 右侧中间 -->
-        <el-main>Main</el-main>
+        <el-main>
+          <!-- 路由出口 -->
+          <router-view></router-view>
+        </el-main>
         <!-- 右侧尾部 -->
-        <el-footer>Footer</el-footer>
+        <el-footer>
+          <Bottom></Bottom>
+        </el-footer>
       </el-container>
     </el-container>
   </div>
 </template>
 <script>
+//引入导航组件
+import Nav from '@/components/Nav/Nav.vue';
+import Top from '@/components/Top/Top.vue';
+import Bottom from '@/components/Bottom/Bottom.vue';
 export default {
-  methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    components: {   //注册组件
+      Nav,
+      Top,
+      Bottom
     }
-  }
 };
 </script>
 <style lang="less">
@@ -60,7 +47,6 @@ export default {
     //左侧
     .el-aside {
       background-color: #d3dce6;
-      color: #333;
       text-align: center;
     }
     //中间
