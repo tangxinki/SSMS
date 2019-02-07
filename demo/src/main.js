@@ -12,6 +12,7 @@ import axios from 'axios'
 //直接把axious挂载到vue原型上
 Vue.prototype.axios = axios;
 
+
 //引入公用样式
 import '@/styles/common.less';
 

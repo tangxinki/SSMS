@@ -27,6 +27,8 @@
   </div>
 </template>
 <script>
+
+
 //引入导航组件
 import Nav from '@/components/Nav/Nav.vue';
 import Top from '@/components/Top/Top.vue';
