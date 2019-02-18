@@ -44,3 +44,17 @@ Day01:
 6 后端首页的实现
 
         
+
+
+添加账号功能实现
+    数据库的设计
+    数据库名:smms
+    表的名字:users
+    用户账号表:
+    create table users(
+        id int primary key auto_increment,
+        username varchar(50),
+        password varchar(32),
+        usergroup varchar(50),
+        cdate timestamp default current_timestamp
+    );

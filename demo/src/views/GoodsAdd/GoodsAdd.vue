@@ -36,7 +36,12 @@
           </el-form-item>
           <!-- 商品进价 -->
           <el-form-item label="商品进价" prop="costPrice">
-            <el-input type="text" v-model="goodsAddForm.costPrice" autocomplete="off" @blur="autoPrice"></el-input>
+            <el-input
+              type="text"
+              v-model="goodsAddForm.costPrice"
+              autocomplete="off"
+              @blur="autoPrice"
+            ></el-input>
           </el-form-item>
           <!-- 商品市场价 -->
           <el-form-item label="商品市场价" prop="marketPrice">
@@ -80,12 +85,13 @@
               <el-radio label="不促销"></el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="商品描述">
+          <el-form-item label="商品描述" prop="goodsDesc">
             <el-input type="textarea" v-model="goodsAddForm.goodsDesc"></el-input>
           </el-form-item>
           <!-- 登录按钮&重置按钮 -->
           <el-form-item>
             <el-button type="primary" @click="submitForm('goodsAddForm')">添加</el-button>
+            <el-button @click="resetForm('goodsAddForm')">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -94,6 +100,7 @@
 </template>
 
 <script>
+import qs from "qs";
 export default {
   data() {
     return {
@@ -108,9 +115,9 @@ export default {
         goodsNum: "",
         goodsWeight: "",
         unit: "",
-        discount: "",
-        promotion: "",
-        goodsDesc: "",
+        discount: "享受",
+        promotion: "促销",
+        goodsDesc: ""
       },
       //验证规则
       rules: {
@@ -141,16 +148,19 @@ export default {
         ],
         unit: [
           { required: true, message: "请选择单位", trigger: "change" } //非空验证
+        ],
+        goodsDesc: [
+          { required: true, message: "请输入商品描述", trigger: "blur" }
         ]
       }
     };
   },
   methods: {
-      //自动填充价格
-      autoPrice () {
-        this.goodsAddForm.marketPrice = this.goodsAddForm.costPrice * 3;
-        this.goodsAddForm.salePrice = this.goodsAddForm.costPrice * 2;
-      },
+    //自动填充价格
+    autoPrice() {
+      this.goodsAddForm.marketPrice = this.goodsAddForm.costPrice * 3;
+      this.goodsAddForm.salePrice = this.goodsAddForm.costPrice * 2;
+    },
     // 点击登录按钮 触发这个函数
     submitForm(formName) {
       // 获取表单组件 调用验证方法
@@ -175,25 +185,43 @@ export default {
             goodsDesc: this.goodsAddForm.goodsDesc
           };
           console.log(params);
-          
-          // console.log(params);
+
           //发送ajax请求 把数据发给后端
-          //   this.axios
-          //     .post("/url", qs.stringify(params), {
-          //       headers: { "Content-Type": "appliction/x/www-form-urlencoded" }
-          //     })
-          //     .then(response => {
-          //       console.log(response.data);
-          //     });
+          this.axios
+            .post(
+              "http://127.0.0.1:3000/goods/addgoods",
+              qs.stringify(params),
+              {}
+            )
+            .then(response => {
+              console.log(response.data);
+              if (response.data.rstCode === 1) {
+                this.$message({
+                  type: "success",
+                  message: response.data.message
+                });
+                this.$router.push("/goodsManage");
+              } else {
+                $message.error(response.data.message);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
 
           //跳转到账号管理
-        //   this.$router.push("/goodsManage");
+          //   this.$router.push("/goodsManage");
         } else {
           // 否则就是false
           alert("前端验证失败 不能提交给后端！");
           return false;
         }
       });
+    },
+    // 点击重置按钮 触发这个函数
+    resetForm(formName) {
+      // this.$refs.loginForm.resetFields() 获取整个表单组件 调用重置方法
+      this.$refs[formName].resetFields();
     }
   }
 };

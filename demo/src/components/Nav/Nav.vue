@@ -1,11 +1,11 @@
 <template>
   <el-menu
-    :default-active="this.$route.path"
     background-color="#2d3a4b"
     unique-opened
-    active-text-color="rgb(64, 158,255)"
+    active-text-color="rgb(64, 158, 255)"
+    :default-active="this.$route.path"
     router
-    >
+  >
     <!-- 导航一 -->
     <el-submenu index="1">
       <template slot="title">
@@ -43,21 +43,21 @@
 export default {};
 </script>
 <style lang="less">
-    //导航
-    .el-aside {
-      background-color: #d3dce6;
-      text-align: center;
-      .el-menu {
-        border: none;
-        .el-submenu {
-          .el-submenu__title {
-            color: #fff;
-          }
-        }
-        .el-menu-item {
-          color: #fff;
-        }
+//导航
+.el-aside {
+  background-color: #d3dce6;
+  text-align: center;
+  .el-menu {
+    border: none;
+    .el-submenu {
+      .el-submenu__title {
+        color: #fff;
       }
     }
+    .el-menu-item {
+      color: #fff;
+    }
+  }
+}
 </style>
 

@@ -29,8 +29,8 @@
             <el-input type="text" v-model="accountAddForm.checkPwd" autocomplete="off"></el-input>
           </el-form-item>
           <!-- 选择用户组 -->
-          <el-form-item label="选择用户组" prop="userGroup">
-            <el-select v-model="accountAddForm.userGroup" placeholder="请选择用户组">
+          <el-form-item label="选择用户组" prop="usergroup">
+            <el-select v-model="accountAddForm.usergroup" placeholder="请选择用户组">
               <el-option label="普通用户" value="普通用户"></el-option>
               <el-option label="高级管理员" value="高级管理员"></el-option>
             </el-select>
@@ -48,7 +48,7 @@
 
 <script>
 // 引入qs库处理post请求
-import qs from 'qs';
+import qs from "qs";
 export default {
   data() {
     //走定义密码的验证
@@ -80,7 +80,7 @@ export default {
         username: "",
         password: "",
         checkPwd: "",
-        userGroup: ""
+        usergroup: "普通用户"
       },
       //验证规则
       rules: {
@@ -90,7 +90,7 @@ export default {
         ],
         password: [{ required: true, validator: pass, trigger: "blur" }],
         checkPwd: [{ required: true, validator: checkPass, trigger: "blur" }],
-        userGroup: [
+        usergroup: [
           { required: true, message: "请选择用户组", trigger: "change" }
         ]
       }
@@ -109,20 +109,25 @@ export default {
           let params = {
             username: this.accountAddForm.username,
             password: this.accountAddForm.password,
-            userGroup: this.accountAddForm.userGroup
+            usergroup: this.accountAddForm.usergroup
           };
-          // console.log(params);
           //发送ajax请求 把数据发给后端
           this.axios
-            .post("/url", qs.stringify(params), {
-              headers: { 'Content-Type':'application/x-www-form-urlencoded' }
+            .post("http://127.0.0.1:3000/users/adduser", qs.stringify(params), {
+              headers: { "Content-Type": "application/x-www-form-urlencoded" }
             })
             .then(response => {
-              console.log(response.data);
+              if (response.data.rstCode === 1) {
+                this.$message({
+                  type: "success",
+                  message: response.data.message
+                });
+                //跳转到账号管理
+                this.$router.push("/accountManage");
+              } else {
+                this.$message.error(response.data.message);
+              }
             });
-
-          //跳转到账号管理
-          this.$router.push("/accountManage");
         } else {
           // 否则就是false
           alert("前端验证失败 不能提交给后端！");

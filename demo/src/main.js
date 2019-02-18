@@ -9,9 +9,26 @@ import router from './router'
 
 import axios from 'axios'
 
+import {Message} from 'element-ui';
+
 //直接把axious挂载到vue原型上
 Vue.prototype.axios = axios;
-
+//全局路由首位.拦截所有路由
+router.beforeEach((to, from ,next) => {
+  //获取token
+  const token = window.localStorage.getItem('token')
+  if (token) {
+    next();
+  } else {
+    if (to.path =='/login'){
+      next();
+    }else {
+      Message.error("请登陆以后再操作!")
+      return next("/login")
+    }
+  }
+  next();
+})
 
 //引入公用样式
 import '@/styles/common.less';

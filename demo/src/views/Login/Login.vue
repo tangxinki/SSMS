@@ -32,6 +32,7 @@
     </div>
 </template>
 <script>
+import qs from "qs";
 export default {
   data() {
     // 包含特殊字符的函数
@@ -113,7 +114,6 @@ export default {
       this.$refs[formName].validate(valid => {
         // 如果所有验证通过 valid就是true
         if (valid) {
-          alert("前端验证通过 可以提交给后端！");
           // 后续就可以把收集的账号和密码 一起发送给后端 验证用户名和密码的正确性。
           // 收集账号和密码
           let params = {
@@ -122,12 +122,28 @@ export default {
           };
 
           // 发送请求 把参数发给后端（把用户名和密码发给后端 验证是否正确）
-          //  console.log(params)
+           this.axios.post('http://127.0.0.1:3000/users/login', qs.stringify(params))
+           .then(response => {
+             let {error_code, message, token, username} = response.data
+             if (error_code === 0){
+               window.localStorage.setItem('token', token)
+               window.localStorage.setItem('username',username)
+               this.$message({
+                 type: "success",
+                 message: message
+               });
+               this.$router.push("/");
+             }else {
+               this.$message.error(response.data.message)
+             }
+           })
+           .catch(err => {
+             console.log(err);
+           })
           // 直接跳转到后端主页
-          this.$router.push("/");
+          // this.$router.push("/");
         } else {
           // 否则就是false
-          alert("前端验证失败 不能提交给后端！");
           return false;
         }
       });

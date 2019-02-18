@@ -38,14 +38,38 @@
   </div>
 </template>
 <script>
+import qs from "qs";
 export default {
   data() {
-    //走定义密码的验证
+    // 自定义旧密码验证
+    const oldPass = (rules, value, callback) => {
+      //收集参数
+      let params = {
+        username: window.localStorage.getItem("username"),
+        oldPwd: this.passwordModifyForm.OriginalPassword
+      };
+      this.axios
+        .get("http://127.0.0.1:3000/users/oldpwd", { params })
+        .then(response => {
+          let { error_code, message } = response.data;
+          if (error_code === 0) {
+            callback();
+          } else {
+            callback(new Error(message));
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+    //自定义密码的验证
     const pass = (rules, value, callback) => {
       if (value === "") {
         callback(new Error("请输入新密码!"));
       } else if (value.leng < 3 || value.length > 6) {
         callback(new Error("长度在 3 - 6 位"));
+      } else if (value === this.passwordModifyForm.OriginalPassword) {
+        callback(new Error("新密码不能与原密码相同!"));
       } else {
         if (this.passwordModifyForm.checkPwd !== "") {
           this.$refs.passwordModifyForm.validateField("checkPwd"); // 调用确认密码的验证（一致性验证）
@@ -59,6 +83,8 @@ export default {
         callback(new Error("请再次输入新密码!"));
       } else if (value !== this.passwordModifyForm.newPassword) {
         callback(new Error("两次输入的密码不一致!"));
+      } else if (value === this.passwordModifyForm.OriginalPassword) {
+        callback(new Error("新密码不能与原密码相同!"));
       } else {
         callback();
       }
@@ -71,7 +97,7 @@ export default {
       },
       rules: {
         OriginalPassword: [
-          { required: true, message: "请输入原密码", trigger: "blur" }
+          { required: true, validator: oldPass, trigger: "blur" }
         ],
         newPassword: [{ required: true, validator: pass, trigger: "blur" }],
         checkPwd: [{ required: true, validator: checkPass, trigger: "blur" }]
@@ -85,20 +111,40 @@ export default {
       this.$refs[formName].validate(valid => {
         // 如果所有验证通过 valid就是true
         if (valid) {
-          alert("前端验证通过 可以提交给后端！");
           // 后续就可以把收集的账号和密码 一起发送给后端 验证用户名和密码的正确性。
-          // 收集账号和密码
           let params = {
-            OriginalPassword: this.passwordModifyForm.OriginalPassword,
-            newPassword: this.passwordModifyForm.newPassword,
-            checkPwd: this.passwordModifyForm.checkPwd
+            username: window.localStorage.getItem('username'),
+            oldPwd: this.passwordModifyForm.OriginalPassword,
+            newPwd: this.passwordModifyForm.newPassword
           };
           console.log(params);
+          this.axios
+            .post("http://127.0.0.1:3000/users/pwdedit", qs.stringify(params))
+            .then(response => {
+              console.log(response.data);
+              let {error_code, message} = response.data;
+              if (error_code === 0){
+                //清除token
+                window.localStorage.removeItem('token')
+                this.$message({
+                  type: "success",
+                  message: message
+                })
+                setTimeout(() => {
+                  //修改成功,跳转到登陆页面
+                  this.$router.push('/login')
+                })
+              }else {
+                this.$message.error(message)
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
           //跳转到账号管理
-          this.$router.push("/accountManage");
+          // this.$router.push("/accountManage");
         } else {
           // 否则就是false
-          alert("前端验证失败 不能提交给后端！");
           return false;
         }
       });
